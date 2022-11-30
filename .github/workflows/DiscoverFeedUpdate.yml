@@ -1,0 +1,54 @@
+name: Discover feed file update from iranika/mo-feed
+on:
+  workflow_dispatch:
+
+  repository_dispatch:
+    types: [feed-updated]
+
+jobs:
+  copy-target:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: FedericoCarboni/setup-ffmpeg@v1
+    - name: initialize git setting.
+      run: |
+        git config --global user.name "iranika"
+        git config --global user.email "7370486+iranika@users.noreply.github.com"
+        git remote set-url origin https://iranika:${GITHUB_TOKEN}@github.com/iranika/mo-4koma.git
+    - name: Setup PowerShell module cache
+      id: cacher
+      uses: actions/cache@v2
+      with:
+        path: "~/.local/share/powershell/Modules"
+        key: ${{ runner.os }}-AngleParse
+    - name: install module
+      if: steps.cacher.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: |
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        Install-Module AngleParse
+    - name: clone repository iranika/mo-feed
+      uses: actions/checkout@v2
+      with:
+        repository: iranika/mo-feed
+        path: mo-feed
+        token: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+    - name: copy feed.atom, 4komaData.*, update-info.dat file
+      run: |
+        cp mo-feed/feed.atom ./feed.atom
+        cp mo-feed/4komaData.* ./
+        cp mo-feed/update-info.dat ./
+    - name: download image
+      run: |
+        pwsh ./mo-feed/mops/download-img.ps1 -Debug
+    - name: commit 4koma feed and imgage
+      run: |
+        (git add feed.atom update-info.dat 4koma/* 4komaData.json 4komaDataMin.js 4komaData.js && git commit -m "mops: find new update." && git push) || echo "No update."
+    - name: download top image.
+      run: |
+        pwsh ./top/download.ps1
+    - name: commit top image.
+      run: |
+        (git add top/top.jpg top/top.webp && git commit -m "top:image was changed" && pwsh ./top/update-feed.ps1 && git add top/feed.atom top/archives/* top/archives.json && git commit -m "top:feed was updated" && git push) || echo "No update top page."
+

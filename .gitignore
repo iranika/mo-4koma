@@ -1,0 +1,10 @@
+mosq/4koma/*
+mosq/*.dat
+mosq/bin/
+.ionide/*
+desktop.ini
+mosq/nimbledeps/*
+gomosq/*
+mops/4koma/*
+*/desktop.ini
+mops/*
