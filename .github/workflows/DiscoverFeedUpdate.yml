@@ -33,7 +33,7 @@ jobs:
       with:
         repository: iranika/mo-feed
         path: mo-feed
-        token: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+        token: ${{ secrets.GH_ACTIONS_TOKEN }}
     - name: copy feed.atom, 4komaData.*, update-info.dat file
       run: |
         cp mo-feed/feed.atom ./feed.atom
