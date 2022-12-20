@@ -9,15 +9,15 @@ jobs:
   copy-target:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: FedericoCarboni/setup-ffmpeg@v1
+    - uses: actions/checkout@v3
+    - uses: FedericoCarboni/setup-ffmpeg@v2
     - name: initialize git setting.
       run: |
         git config --global user.name "iranika"
         git config --global user.email "7370486+iranika@users.noreply.github.com"
     - name: Setup PowerShell module cache
       id: cacher
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: "~/.local/share/powershell/Modules"
         key: ${{ runner.os }}-AngleParse
@@ -28,7 +28,7 @@ jobs:
         Set-PSRepository PSGallery -InstallationPolicy Trusted
         Install-Module AngleParse
     - name: clone repository iranika/mo-feed
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: iranika/mo-feed
         path: mo-feed
