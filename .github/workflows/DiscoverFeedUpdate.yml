@@ -35,9 +35,9 @@ jobs:
         token: ${{ secrets.GH_ACTIONS_TOKEN }}
     - name: copy feed.atom, 4komaData.*, update-info.dat file
       run: |
-        cp mo-feed/feed.atom ./docs/feed.atom
-        cp mo-feed/4komaData.* ./docs/
-        cp mo-feed/update-info.dat ./docs/
+        cp mo-feed/docs/feed.atom ./docs/feed.atom
+        cp mo-feed/docs/4komaData.* ./docs/
+        cp mo-feed/docs/update-info.dat ./docs/
     - name: download image
       run: |
         cd docs
