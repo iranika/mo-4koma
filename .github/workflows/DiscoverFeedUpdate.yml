@@ -35,12 +35,13 @@ jobs:
         token: ${{ secrets.GH_ACTIONS_TOKEN }}
     - name: copy feed.atom, 4komaData.*, update-info.dat file
       run: |
-        cp mo-feed/feed.atom ./feed.atom
-        cp mo-feed/4komaData.* ./
-        cp mo-feed/update-info.dat ./
+        cp mo-feed/feed.atom ./docs/feed.atom
+        cp mo-feed/4komaData.* ./docs/
+        cp mo-feed/update-info.dat ./docs/
     - name: download image
       run: |
-        pwsh ./mo-feed/mops/download-img.ps1 -Debug
+        cd docs
+        pwsh ../mo-feed/mops/download-img.ps1 -Debug
     - name: commit 4koma feed and imgage
       run: |
         (git add feed.atom update-info.dat 4koma/* 4komaData.json 4komaDataMin.js 4komaData.js && git commit -m "mops: find new update." && git push) || echo "No update."
