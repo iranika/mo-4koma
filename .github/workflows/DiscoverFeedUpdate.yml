@@ -5,6 +5,13 @@ on:
   repository_dispatch:
     types: [feed-updated]
 
+permissions:
+  contents: write
+
+concurrency:
+  group: feed-update
+  cancel-in-progress: false
+
 jobs:
   copy-target:
     runs-on: ubuntu-latest
@@ -39,16 +46,31 @@ jobs:
         cp mo-feed/docs/4komaData.* ./docs/
         cp mo-feed/docs/update-info.dat ./docs/
     - name: download image
+      working-directory: docs
       run: |
-        cd docs
         pwsh ../mo-feed/mops/download-img.ps1 -Debug
-    - name: commit 4koma feed and imgage
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+        cache-dependency-path: requirements-simple.txt
+    - name: Generate simple episode images and JSON
       run: |
-        (git add feed.atom update-info.dat 4koma/* 4komaData.json 4komaDataMin.js 4komaData.js && git commit -m "mops: find new update." && git push) || echo "No update."
+        python -m pip install -r requirements-simple.txt
+        python generate-simple.py
+    - name: commit 4koma feed and imgage
+      working-directory: docs
+      run: |
+        git add feed.atom update-info.dat 4koma/ 4komaData.json 4komaDataMin.js 4komaData.js 4komaDataSimple.json
+        if ! git diff --cached --quiet; then
+          git commit -m "mops: find new update."
+          git push
+        fi
     - name: download top image.
+      working-directory: docs
       run: |
         pwsh ./top/download.ps1
     - name: commit top image.
+      working-directory: docs
       run: |
         (git add top/top.jpg top/top.webp && git commit -m "top:image was changed" && pwsh ./top/update-feed.ps1 && git add top/feed.atom top/archives/* top/archives.json && git commit -m "top:feed was updated" && git push) || echo "No update top page."
-

@@ -8,3 +8,7 @@ gomosq/*
 mops/4koma/*
 */desktop.ini
 mops/*
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.venv/
