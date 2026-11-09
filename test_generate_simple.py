@@ -37,12 +37,12 @@ class TrimTests(unittest.TestCase):
         self.assertLess(trimmed.width, image.width)
         self.assertLess(trimmed.height, image.height)
         self.assertEqual(
-            sum(p == (0, 0, 0) for p in image.getdata()),
-            sum(p == (0, 0, 0) for p in trimmed.getdata()),
+            sum(p == (0, 0, 0) for p in image.get_flattened_data()),
+            sum(p == (0, 0, 0) for p in trimmed.get_flattened_data()),
         )
         self.assertEqual(
-            sum(p == (170, 170, 160) for p in image.getdata()),
-            sum(p == (170, 170, 160) for p in trimmed.getdata()),
+            sum(p == (170, 170, 160) for p in image.get_flattened_data()),
+            sum(p == (170, 170, 160) for p in trimmed.get_flattened_data()),
         )
 
     def test_full_bleed_and_dark_pages_are_unchanged(self):

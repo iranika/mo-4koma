@@ -3,7 +3,7 @@
 
 ### 1話1画像の simple 版
 
-原本と既存の `docs/4komaData.json` は変更せず、話ごとに画像を上から順に
+Python 3.10以降を使用します。原本と既存の `docs/4komaData.json` は変更せず、話ごとに画像を上から順に
 結合した画像と、同じ形式の `docs/4komaDataSimple.json` を生成できます。
 
 ```sh
